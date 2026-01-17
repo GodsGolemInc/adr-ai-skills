@@ -1,0 +1,23 @@
+{
+  "$schema": "./constraints-schema.json",
+  "version": "1.0.0",
+  "lastUpdated": "2026-01-17",
+  "rules": [
+    {
+      "id": "ADR-0000",
+      "description": "ADR process must be followed for architectural decisions",
+      "weight": 11,
+      "enforcement": "required",
+      "required": [
+        "docs/adr/"
+      ],
+      "scope": ["*"],
+      "checkType": "directory_exists"
+    }
+  ],
+  "metadata": {
+    "extractedFrom": "docs/adr/",
+    "totalADRs": 1,
+    "criticalRules": 1
+  }
+}

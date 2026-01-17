@@ -1,0 +1,80 @@
+{
+  "name": "adr-ai-skills",
+  "version": "1.0.0",
+  "description": "AI-Enhanced Architecture Decision Records - Detect, generate, and enforce ADRs with AI",
+  "author": "Your Team",
+  "homepage": "https://github.com/GodsGolemInc/adr-ai-skills",
+  "keywords": [
+    "adr",
+    "architecture",
+    "ai",
+    "claude",
+    "design-decisions",
+    "jj",
+    "jujutsu",
+    "constraints",
+    "ci"
+  ],
+  "license": "MIT",
+  "claude": {
+    "minVersion": "1.0.0"
+  },
+  "compatibility": {
+    "formats": ["extended", "nygard", "madr"],
+    "tools": ["adr-tools", "madr", "log4brains", "dotnet-adr"]
+  },
+  "directories": {
+    "adr": "docs/adr",
+    "designNotes": "docs/design-notes",
+    "templates": ".adr-ai-skills/templates",
+    "prompts": ".adr-ai-skills/prompts"
+  },
+  "files": {
+    "constraints": "docs/constraints.json",
+    "constraintsSchema": "docs/constraints-schema.json"
+  },
+  "skills": [
+    {
+      "name": "adr",
+      "file": "skills/adr.md",
+      "triggers": ["/adr"],
+      "description": "AI-powered ADR management with multi-format support"
+    },
+    {
+      "name": "jj-analyze",
+      "file": "skills/jj-analyze.md",
+      "triggers": ["/jj-analyze", "/jj"],
+      "description": "AI detection of architectural decisions from JJ changes"
+    },
+    {
+      "name": "design-review",
+      "file": "skills/design-review.md",
+      "triggers": ["/design-review", "/review"],
+      "description": "AI architectural compliance review"
+    },
+    {
+      "name": "constraints-check",
+      "file": "skills/constraints-check.md",
+      "triggers": ["/constraints-check", "/check"],
+      "description": "Automated constraint validation for CI"
+    },
+    {
+      "name": "sync",
+      "file": "skills/sync.md",
+      "triggers": ["/sync"],
+      "description": "JJ to Git synchronization with pre-checks"
+    },
+    {
+      "name": "pr",
+      "file": "skills/pr.md",
+      "triggers": ["/pr"],
+      "description": "Create PR with auto-linked ADRs"
+    },
+    {
+      "name": "release",
+      "file": "skills/release.md",
+      "triggers": ["/release"],
+      "description": "Release with ADR-aware notes"
+    }
+  ]
+}

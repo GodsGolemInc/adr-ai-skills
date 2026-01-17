@@ -1,0 +1,91 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ADR Constraints Schema",
+  "description": "Machine-readable architectural constraints extracted from ADRs",
+  "type": "object",
+  "required": ["version", "rules"],
+  "properties": {
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "lastUpdated": {
+      "type": "string",
+      "format": "date"
+    },
+    "rules": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/rule"
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "extractedFrom": { "type": "string" },
+        "totalADRs": { "type": "integer" },
+        "criticalRules": { "type": "integer" }
+      }
+    }
+  },
+  "definitions": {
+    "rule": {
+      "type": "object",
+      "required": ["id", "description", "weight"],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^ADR-\\d{4}$",
+          "description": "Reference to originating ADR"
+        },
+        "description": {
+          "type": "string",
+          "description": "Human-readable description of the constraint"
+        },
+        "weight": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 12,
+          "description": "Importance score from ADR"
+        },
+        "enforcement": {
+          "type": "string",
+          "enum": ["required", "recommended", "deprecated"],
+          "default": "required"
+        },
+        "forbidden": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Patterns or keywords that must not appear"
+        },
+        "required": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Patterns or structures that must exist"
+        },
+        "scope": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Directories or modules where rule applies"
+        },
+        "checkType": {
+          "type": "string",
+          "enum": [
+            "grep_forbidden",
+            "grep_required",
+            "directory_exists",
+            "file_exists",
+            "pattern_match",
+            "llm_review"
+          ],
+          "description": "How to check this constraint"
+        },
+        "exceptions": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Paths or patterns exempt from this rule"
+        }
+      }
+    }
+  }
+}

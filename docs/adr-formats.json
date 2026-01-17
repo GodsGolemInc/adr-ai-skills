@@ -1,0 +1,66 @@
+{
+  "formats": {
+    "extended": {
+      "name": "Extended (Default)",
+      "description": "Full format with JJ integration, scoring, and constraints",
+      "template": "templates/adr-template.md",
+      "directory": "docs/adr",
+      "features": {
+        "jjIntegration": true,
+        "scoring": true,
+        "constraints": true,
+        "rejectedAlternatives": true
+      }
+    },
+    "nygard": {
+      "name": "Nygard (Classic)",
+      "description": "Original ADR format by Michael Nygard",
+      "template": "templates/adr-template-nygard.md",
+      "directory": "docs/adr",
+      "features": {
+        "jjIntegration": false,
+        "scoring": false,
+        "constraints": false,
+        "rejectedAlternatives": false
+      },
+      "compatibility": ["adr-tools"]
+    },
+    "madr": {
+      "name": "MADR",
+      "description": "Markdown Architectural Decision Records",
+      "template": "templates/adr-template-madr.md",
+      "directory": "docs/decisions",
+      "features": {
+        "jjIntegration": false,
+        "scoring": false,
+        "constraints": false,
+        "rejectedAlternatives": true
+      },
+      "compatibility": ["madr", "log4brains"]
+    }
+  },
+  "defaultFormat": "extended",
+  "conversion": {
+    "extended_to_nygard": {
+      "mapping": {
+        "Context": "Context",
+        "Decision": "Decision",
+        "Consequences.Benefits": "Consequences",
+        "Consequences.Trade-offs": "Consequences",
+        "Status": "Status"
+      },
+      "dropped": ["Origin", "Decision Weight", "Reason", "Constraints"]
+    },
+    "extended_to_madr": {
+      "mapping": {
+        "Context": "Context and Problem Statement",
+        "Decision": "Decision Outcome",
+        "Reason": "Decision Drivers",
+        "Rejected Alternatives": "Considered Options",
+        "Consequences.Benefits": "Consequences (Good)",
+        "Consequences.Trade-offs": "Consequences (Bad)"
+      },
+      "dropped": ["Origin", "Decision Weight", "Constraints"]
+    }
+  }
+}

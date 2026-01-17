@@ -1,0 +1,29 @@
+{
+  "skills": {
+    "adr": {
+      "path": "skills/adr.md",
+      "description": "ADR management - create, list, validate, and sync architectural decisions",
+      "triggers": ["/adr"]
+    },
+    "jj-analyze": {
+      "path": "skills/jj-analyze.md",
+      "description": "Analyze JJ changes for architectural significance",
+      "triggers": ["/jj-analyze", "/jj"]
+    },
+    "design-review": {
+      "path": "skills/design-review.md",
+      "description": "Architectural compliance review",
+      "triggers": ["/design-review", "/review"]
+    },
+    "constraints-check": {
+      "path": "skills/constraints-check.md",
+      "description": "Fast constraint validation against ADRs",
+      "triggers": ["/constraints-check", "/check"]
+    }
+  },
+  "prompts": {
+    "architect": {
+      "system": "You are a software architect. Your primary responsibility is to ensure code changes respect existing ADRs. ADRs are law - do not suggest violating them. If changes require ADR modification, propose it explicitly."
+    }
+  }
+}
