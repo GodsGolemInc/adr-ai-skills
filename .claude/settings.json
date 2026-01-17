@@ -1,24 +1,39 @@
 {
   "skills": {
     "adr": {
-      "path": "skills/adr.md",
+      "path": ".adr-ai-skills/skills/adr.md",
       "description": "ADR management - create, list, validate, and sync architectural decisions",
       "triggers": ["/adr"]
     },
     "jj-analyze": {
-      "path": "skills/jj-analyze.md",
+      "path": ".adr-ai-skills/skills/jj-analyze.md",
       "description": "Analyze JJ changes for architectural significance",
       "triggers": ["/jj-analyze", "/jj"]
     },
     "design-review": {
-      "path": "skills/design-review.md",
+      "path": ".adr-ai-skills/skills/design-review.md",
       "description": "Architectural compliance review",
       "triggers": ["/design-review", "/review"]
     },
     "constraints-check": {
-      "path": "skills/constraints-check.md",
+      "path": ".adr-ai-skills/skills/constraints-check.md",
       "description": "Fast constraint validation against ADRs",
       "triggers": ["/constraints-check", "/check"]
+    },
+    "sync": {
+      "path": ".adr-ai-skills/skills/sync.md",
+      "description": "Sync JJ changes to Git",
+      "triggers": ["/sync"]
+    },
+    "pr": {
+      "path": ".adr-ai-skills/skills/pr.md",
+      "description": "Create PR with auto-linked ADRs",
+      "triggers": ["/pr"]
+    },
+    "release": {
+      "path": ".adr-ai-skills/skills/release.md",
+      "description": "Release with ADR-aware notes",
+      "triggers": ["/release"]
     }
   },
   "prompts": {
