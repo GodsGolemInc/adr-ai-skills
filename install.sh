@@ -62,12 +62,15 @@ echo -e "  ${GREEN}✓${NC} Directories created"
 
 echo -e "${BLUE}[2/6]${NC} Installing plugin files..."
 
+# Source directory for plugin files
+SOURCE_DIR="$SCRIPT_DIR/.adr-ai-skills"
+
 # Copy plugin files to .adr-ai-skills
-cp "$SCRIPT_DIR/plugin.json" "$TARGET_DIR/.adr-ai-skills/"
-cp "$SCRIPT_DIR/templates/"*.md "$TARGET_DIR/.adr-ai-skills/templates/" 2>/dev/null || true
-cp "$SCRIPT_DIR/prompts/"*.md "$TARGET_DIR/.adr-ai-skills/prompts/" 2>/dev/null || true
-cp "$SCRIPT_DIR/skills/"*.md "$TARGET_DIR/.adr-ai-skills/skills/" 2>/dev/null || true
-cp "$SCRIPT_DIR/jj-workflow.sh" "$TARGET_DIR/.adr-ai-skills/" 2>/dev/null || true
+cp "$SOURCE_DIR/plugin.json" "$TARGET_DIR/.adr-ai-skills/"
+cp "$SOURCE_DIR/templates/"*.md "$TARGET_DIR/.adr-ai-skills/templates/" 2>/dev/null || true
+cp "$SOURCE_DIR/prompts/"*.md "$TARGET_DIR/.adr-ai-skills/prompts/" 2>/dev/null || true
+cp "$SOURCE_DIR/skills/"*.md "$TARGET_DIR/.adr-ai-skills/skills/" 2>/dev/null || true
+cp "$SOURCE_DIR/jj-workflow.sh" "$TARGET_DIR/.adr-ai-skills/" 2>/dev/null || true
 chmod +x "$TARGET_DIR/.adr-ai-skills/jj-workflow.sh" 2>/dev/null || true
 
 echo -e "  ${GREEN}✓${NC} Plugin files installed"
@@ -98,7 +101,7 @@ fi
 
 # Copy schema if not exists
 if [ ! -f "$TARGET_DIR/docs/constraints-schema.json" ]; then
-    cp "$SCRIPT_DIR/constraints-schema.json" "$TARGET_DIR/doc/" 2>/dev/null || true
+    cp "$SOURCE_DIR/constraints-schema.json" "$TARGET_DIR/docs/" 2>/dev/null || true
     echo -e "  ${GREEN}✓${NC} Created constraints-schema.json"
 else
     echo -e "  ${YELLOW}⊘${NC} constraints-schema.json already exists (preserved)"

@@ -104,7 +104,7 @@ echo -e "${GREEN}╔════════════════════
 echo -e "${GREEN}║  Uninstallation Complete!                                ║${NC}"
 echo -e "${GREEN}╚══════════════════════════════════════════════════════════╝${NC}"
 echo ""
-echo "Your ADRs and constraints have been preserved in doc/"
+echo "Your ADRs and constraints have been preserved in docs/"
 echo ""
 echo "Backup files created with .backup.* extension"
 echo "You can safely delete them after verification."

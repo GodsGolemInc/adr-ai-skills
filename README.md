@@ -77,7 +77,7 @@ git clone https://github.com/GodsGolemInc/adr-ai-skills /tmp/adr-ai-skills
 
 # 2. Install into your project
 cd /path/to/your/project
-/tmp/adr-ai-skills/plugin/adr-ai-skills/install.sh .
+/tmp/adr-ai-skills/install.sh .
 
 # 3. Verify
 claude
@@ -98,7 +98,7 @@ claude
 #### Uninstall
 
 ```bash
-/tmp/adr-ai-skills/plugin/adr-ai-skills/uninstall.sh .
+/tmp/adr-ai-skills/uninstall.sh .
 ```
 
 ADRs and constraints are preserved; only plugin files are removed.
@@ -108,19 +108,20 @@ ADRs and constraints are preserved; only plugin files are removed.
 For fine-grained customization:
 
 ```bash
-# Create only necessary directories
-mkdir -p docs/adr docs/design-notes .adr-ai-skills
+# Clone repository
+git clone https://github.com/GodsGolemInc/adr-ai-skills /tmp/adr-ai-skills
 
-# Copy required files
-cp -r plugin/adr-ai-skills/skills .adr-ai-skills/
-cp -r plugin/adr-ai-skills/prompts .adr-ai-skills/
-cp -r plugin/adr-ai-skills/templates .adr-ai-skills/
+# Copy required directories
+cp -r /tmp/adr-ai-skills/.adr-ai-skills .
+mkdir -p docs/adr docs/design-notes
 
 # Manually add to CLAUDE.md
 # Manually add skills to .claude/settings.json
 ```
 
 ### Method 3: Clone as Template (New Projects)
+
+Clone and start fresh - same structure as Method 1:
 
 ```bash
 git clone https://github.com/GodsGolemInc/adr-ai-skills my-new-project
@@ -134,11 +135,11 @@ jj git init --colocate  # Recommended: JJ with Git
 
 ## Directory Structure
 
-### After Plugin Installation
+Both Method 1 (install) and Method 3 (clone) produce the same structure:
 
 ```
 your-project/
-├── .adr-ai-skills/             # Plugin
+├── .adr-ai-skills/             # Plugin core
 │   ├── plugin.json             # Plugin configuration
 │   ├── skills/                 # Claude Code Skills
 │   ├── prompts/                # AI prompts
@@ -146,13 +147,15 @@ your-project/
 │   └── jj-workflow.sh          # CLI helper
 ├── .claude/
 │   └── settings.json           # Skills registered (merged)
-├── CLAUDE.md                   # Project config (appended)
 ├── .jj/                        # JJ repository (if initialized)
 ├── .git/                       # Git repository (colocated with JJ)
 ├── docs/
 │   ├── adr/                    # ADR documents
 │   ├── design-notes/           # Lightweight design notes
 │   └── constraints.json        # Machine-readable constraints
+├── CLAUDE.md                   # Project config (appended)
+├── install.sh                  # Installer (for other projects)
+├── uninstall.sh                # Uninstaller
 └── (your existing files...)
 ```
 

@@ -77,7 +77,7 @@ git clone https://github.com/GodsGolemInc/adr-ai-skills /tmp/adr-ai-skills
 
 # 2. 既存プロジェクトにインストール
 cd /path/to/your/project
-/tmp/adr-ai-skills/plugin/adr-ai-skills/install.sh .
+/tmp/adr-ai-skills/install.sh .
 
 # 3. 確認
 claude
@@ -98,7 +98,7 @@ claude
 #### アンインストール
 
 ```bash
-/tmp/adr-ai-skills/plugin/adr-ai-skills/uninstall.sh .
+/tmp/adr-ai-skills/uninstall.sh .
 ```
 
 ADRやconstraintsは保持され、プラグインファイルのみ削除されます。
@@ -108,19 +108,20 @@ ADRやconstraintsは保持され、プラグインファイルのみ削除され
 細かくカスタマイズしたい場合：
 
 ```bash
-# 必要なディレクトリのみ作成
-mkdir -p docs/adr docs/design-notes .adr-ai-skills
+# リポジトリをクローン
+git clone https://github.com/GodsGolemInc/adr-ai-skills /tmp/adr-ai-skills
 
-# 必要なファイルをコピー
-cp -r plugin/adr-ai-skills/skills .adr-ai-skills/
-cp -r plugin/adr-ai-skills/prompts .adr-ai-skills/
-cp -r plugin/adr-ai-skills/templates .adr-ai-skills/
+# 必要なディレクトリをコピー
+cp -r /tmp/adr-ai-skills/.adr-ai-skills .
+mkdir -p docs/adr docs/design-notes
 
 # CLAUDE.md に追記（手動）
 # .claude/settings.json にskillsを追加（手動）
 ```
 
 ### 方法3: テンプレートとしてクローン（新規プロジェクト）
+
+クローンして新規開始 - 方法1と同一構造：
 
 ```bash
 git clone https://github.com/GodsGolemInc/adr-ai-skills my-new-project
@@ -134,7 +135,7 @@ jj git init --colocate  # 推奨: JJ + Git
 
 ## ディレクトリ構成
 
-### プラグイン導入後
+方法1（インストール）と方法3（クローン）は同一構造：
 
 ```
 your-project/
@@ -146,13 +147,15 @@ your-project/
 │   └── jj-workflow.sh          # CLIヘルパー
 ├── .claude/
 │   └── settings.json           # Skills登録（マージ済み）
-├── CLAUDE.md                   # プロジェクト設定（追記済み）
 ├── .jj/                        # JJリポジトリ（初期化済みの場合）
 ├── .git/                       # Gitリポジトリ（JJと共存）
 ├── docs/
 │   ├── adr/                    # ADRドキュメント
 │   ├── design-notes/           # 軽量な設計メモ
 │   └── constraints.json        # 機械可読な制約
+├── CLAUDE.md                   # プロジェクト設定（追記済み）
+├── install.sh                  # インストーラー（他プロジェクト用）
+├── uninstall.sh                # アンインストーラー
 └── (your existing files...)
 ```
 
