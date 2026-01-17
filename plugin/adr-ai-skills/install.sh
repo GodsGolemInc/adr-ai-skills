@@ -48,7 +48,7 @@ if [ -d "$TARGET_DIR/.adr-ai-skills" ]; then
     mv "$TARGET_DIR/.adr-ai-skills" "$TARGET_DIR/.adr-ai-skills.backup.$(date +%Y%m%d%H%M%S)"
 fi
 
-echo -e "${BLUE}[1/5]${NC} Creating directory structure..."
+echo -e "${BLUE}[1/6]${NC} Creating directory structure..."
 
 # Create directories (safe - mkdir -p won't fail if exists)
 # Using docs/adr to match adr-tools convention
@@ -60,7 +60,7 @@ mkdir -p "$TARGET_DIR/docs/design-notes"
 
 echo -e "  ${GREEN}✓${NC} Directories created"
 
-echo -e "${BLUE}[2/5]${NC} Installing plugin files..."
+echo -e "${BLUE}[2/6]${NC} Installing plugin files..."
 
 # Copy plugin files to .adr-ai-skills
 cp "$SCRIPT_DIR/plugin.json" "$TARGET_DIR/.adr-ai-skills/"
@@ -72,7 +72,7 @@ chmod +x "$TARGET_DIR/.adr-ai-skills/jj-workflow.sh" 2>/dev/null || true
 
 echo -e "  ${GREEN}✓${NC} Plugin files installed"
 
-echo -e "${BLUE}[3/5]${NC} Setting up constraints..."
+echo -e "${BLUE}[3/6]${NC} Setting up constraints..."
 
 # Create constraints.json if not exists
 if [ ! -f "$TARGET_DIR/docs/constraints.json" ]; then
@@ -104,7 +104,7 @@ else
     echo -e "  ${YELLOW}⊘${NC} constraints-schema.json already exists (preserved)"
 fi
 
-echo -e "${BLUE}[4/5]${NC} Configuring Claude Code..."
+echo -e "${BLUE}[4/6]${NC} Configuring Claude Code..."
 
 # Merge into .claude/settings.json
 mkdir -p "$TARGET_DIR/.claude"
@@ -197,7 +197,7 @@ EOF
     echo -e "  ${GREEN}✓${NC} Created settings.json"
 fi
 
-echo -e "${BLUE}[5/5]${NC} Updating CLAUDE.md..."
+echo -e "${BLUE}[5/6]${NC} Updating CLAUDE.md..."
 
 # Append to CLAUDE.md (not replace)
 CLAUDE_SECTION=$(cat << 'EOF'
@@ -260,6 +260,35 @@ else
     echo "# Project Configuration" > "$TARGET_DIR/CLAUDE.md"
     echo "$CLAUDE_SECTION" >> "$TARGET_DIR/CLAUDE.md"
     echo -e "  ${GREEN}✓${NC} Created CLAUDE.md"
+fi
+
+# Initialize VCS if not already initialized
+if [ ! -d "$TARGET_DIR/.jj" ] && [ ! -d "$TARGET_DIR/.git" ]; then
+    echo ""
+    echo -e "${BLUE}[6/6]${NC} Initializing version control..."
+    if command -v jj &> /dev/null; then
+        # JJ available - use colocated mode (JJ + Git)
+        jj git init --colocate "$TARGET_DIR"
+        echo -e "  ${GREEN}✓${NC} Initialized JJ (colocated with Git)"
+    elif command -v git &> /dev/null; then
+        # Fallback to Git only
+        git init "$TARGET_DIR"
+        echo -e "  ${YELLOW}⊘${NC} Initialized Git (JJ not found - recommend: brew install jj)"
+    else
+        echo -e "  ${YELLOW}⚠${NC} No VCS found - manual initialization required"
+    fi
+elif [ -d "$TARGET_DIR/.git" ] && [ ! -d "$TARGET_DIR/.jj" ]; then
+    echo ""
+    echo -e "${BLUE}[6/6]${NC} Version control setup..."
+    if command -v jj &> /dev/null; then
+        echo -e "  ${YELLOW}⊘${NC} Git repo exists. To add JJ: jj git init --git-repo ."
+    else
+        echo -e "  ${YELLOW}⊘${NC} Git repo exists (JJ not installed)"
+    fi
+else
+    echo ""
+    echo -e "${BLUE}[6/6]${NC} Version control..."
+    echo -e "  ${GREEN}✓${NC} Already initialized"
 fi
 
 # Create bootstrap ADR if docs/adr is empty
