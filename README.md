@@ -93,6 +93,7 @@ claude
 | `docs/constraints.json` | Preserve (no overwrite) |
 | `.claude/settings.json` | **Merge** (preserve existing) |
 | `CLAUDE.md` | **Append** (preserve existing) |
+| **Initialize VCS** | JJ (colocated) if available, else Git |
 
 #### Uninstall
 
@@ -124,8 +125,9 @@ cp -r plugin/adr-ai-skills/templates .adr-ai-skills/
 ```bash
 git clone https://github.com/GodsGolemInc/adr-ai-skills my-new-project
 cd my-new-project
-rm -rf .git
-git init
+rm -rf .git .jj
+jj git init --colocate  # Recommended: JJ with Git
+# or: git init           # Git only
 ```
 
 ---
@@ -145,7 +147,9 @@ your-project/
 ├── .claude/
 │   └── settings.json           # Skills registered (merged)
 ├── CLAUDE.md                   # Project config (appended)
-├── doc/
+├── .jj/                        # JJ repository (if initialized)
+├── .git/                       # Git repository (colocated with JJ)
+├── docs/
 │   ├── adr/                    # ADR documents
 │   ├── design-notes/           # Lightweight design notes
 │   └── constraints.json        # Machine-readable constraints

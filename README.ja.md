@@ -93,6 +93,7 @@ claude
 | `docs/constraints.json` | 保持（上書きしない） |
 | `.claude/settings.json` | **マージ**（既存設定を保持） |
 | `CLAUDE.md` | **追記**（既存内容を保持） |
+| **VCS初期化** | JJ（colocated）優先、なければGit |
 
 #### アンインストール
 
@@ -124,8 +125,9 @@ cp -r plugin/adr-ai-skills/templates .adr-ai-skills/
 ```bash
 git clone https://github.com/GodsGolemInc/adr-ai-skills my-new-project
 cd my-new-project
-rm -rf .git
-git init
+rm -rf .git .jj
+jj git init --colocate  # 推奨: JJ + Git
+# または: git init        # Gitのみ
 ```
 
 ---
@@ -145,7 +147,9 @@ your-project/
 ├── .claude/
 │   └── settings.json           # Skills登録（マージ済み）
 ├── CLAUDE.md                   # プロジェクト設定（追記済み）
-├── doc/
+├── .jj/                        # JJリポジトリ（初期化済みの場合）
+├── .git/                       # Gitリポジトリ（JJと共存）
+├── docs/
 │   ├── adr/                    # ADRドキュメント
 │   ├── design-notes/           # 軽量な設計メモ
 │   └── constraints.json        # 機械可読な制約
