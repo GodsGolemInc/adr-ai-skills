@@ -1,41 +1,4 @@
 {
-  "skills": {
-    "adr": {
-      "path": ".adr-ai-skills/skills/adr.md",
-      "description": "ADR management - create, list, validate, and sync architectural decisions",
-      "triggers": ["/adr"]
-    },
-    "jj-analyze": {
-      "path": ".adr-ai-skills/skills/jj-analyze.md",
-      "description": "Analyze JJ changes for architectural significance",
-      "triggers": ["/jj-analyze", "/jj"]
-    },
-    "design-review": {
-      "path": ".adr-ai-skills/skills/design-review.md",
-      "description": "Architectural compliance review",
-      "triggers": ["/design-review", "/review"]
-    },
-    "constraints-check": {
-      "path": ".adr-ai-skills/skills/constraints-check.md",
-      "description": "Fast constraint validation against ADRs",
-      "triggers": ["/constraints-check", "/check"]
-    },
-    "sync": {
-      "path": ".adr-ai-skills/skills/sync.md",
-      "description": "Sync JJ changes to Git",
-      "triggers": ["/sync"]
-    },
-    "pr": {
-      "path": ".adr-ai-skills/skills/pr.md",
-      "description": "Create PR with auto-linked ADRs",
-      "triggers": ["/pr"]
-    },
-    "release": {
-      "path": ".adr-ai-skills/skills/release.md",
-      "description": "Release with ADR-aware notes",
-      "triggers": ["/release"]
-    }
-  },
   "prompts": {
     "architect": {
       "system": "You are a software architect. Your primary responsibility is to ensure code changes respect existing ADRs. ADRs are law - do not suggest violating them. If changes require ADR modification, propose it explicitly."
