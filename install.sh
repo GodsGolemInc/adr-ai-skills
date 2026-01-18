@@ -48,34 +48,44 @@ if [ -d "$TARGET_DIR/.adr-ai-skills" ]; then
     mv "$TARGET_DIR/.adr-ai-skills" "$TARGET_DIR/.adr-ai-skills.backup.$(date +%Y%m%d%H%M%S)"
 fi
 
-echo -e "${BLUE}[1/6]${NC} Creating directory structure..."
+echo -e "${BLUE}[1/7]${NC} Creating directory structure..."
 
 # Create directories (safe - mkdir -p won't fail if exists)
-# Using docs/adr to match adr-tools convention
 mkdir -p "$TARGET_DIR/.adr-ai-skills/templates"
 mkdir -p "$TARGET_DIR/.adr-ai-skills/prompts"
-mkdir -p "$TARGET_DIR/.adr-ai-skills/skills"
+mkdir -p "$TARGET_DIR/.claude/skills"
 mkdir -p "$TARGET_DIR/docs/adr"
 mkdir -p "$TARGET_DIR/docs/design-notes"
 
 echo -e "  ${GREEN}✓${NC} Directories created"
 
-echo -e "${BLUE}[2/6]${NC} Installing plugin files..."
+echo -e "${BLUE}[2/7]${NC} Installing skills (Claude Code official format)..."
 
 # Source directory for plugin files
-SOURCE_DIR="$SCRIPT_DIR/.adr-ai-skills"
+SOURCE_DIR="$SCRIPT_DIR"
 
-# Copy plugin files to .adr-ai-skills
-cp "$SOURCE_DIR/plugin.json" "$TARGET_DIR/.adr-ai-skills/"
-cp "$SOURCE_DIR/templates/"*.md "$TARGET_DIR/.adr-ai-skills/templates/" 2>/dev/null || true
-cp "$SOURCE_DIR/prompts/"*.md "$TARGET_DIR/.adr-ai-skills/prompts/" 2>/dev/null || true
-cp "$SOURCE_DIR/skills/"*.md "$TARGET_DIR/.adr-ai-skills/skills/" 2>/dev/null || true
-cp "$SOURCE_DIR/jj-workflow.sh" "$TARGET_DIR/.adr-ai-skills/" 2>/dev/null || true
+# Copy skills to .claude/skills/ (official Claude Code format)
+for skill in adr jj-analyze design-review constraints-check sync pr release; do
+    mkdir -p "$TARGET_DIR/.claude/skills/$skill"
+    if [ -f "$SOURCE_DIR/.claude/skills/$skill/SKILL.md" ]; then
+        cp "$SOURCE_DIR/.claude/skills/$skill/SKILL.md" "$TARGET_DIR/.claude/skills/$skill/"
+    fi
+done
+
+echo -e "  ${GREEN}✓${NC} Skills installed"
+
+echo -e "${BLUE}[3/7]${NC} Installing plugin files..."
+
+# Copy plugin files to .adr-ai-skills (prompts, templates)
+cp "$SOURCE_DIR/.adr-ai-skills/plugin.json" "$TARGET_DIR/.adr-ai-skills/"
+cp "$SOURCE_DIR/.adr-ai-skills/templates/"*.md "$TARGET_DIR/.adr-ai-skills/templates/" 2>/dev/null || true
+cp "$SOURCE_DIR/.adr-ai-skills/prompts/"*.md "$TARGET_DIR/.adr-ai-skills/prompts/" 2>/dev/null || true
+cp "$SOURCE_DIR/.adr-ai-skills/jj-workflow.sh" "$TARGET_DIR/.adr-ai-skills/" 2>/dev/null || true
 chmod +x "$TARGET_DIR/.adr-ai-skills/jj-workflow.sh" 2>/dev/null || true
 
 echo -e "  ${GREEN}✓${NC} Plugin files installed"
 
-echo -e "${BLUE}[3/6]${NC} Setting up constraints..."
+echo -e "${BLUE}[4/7]${NC} Setting up constraints..."
 
 # Create constraints.json if not exists
 if [ ! -f "$TARGET_DIR/docs/constraints.json" ]; then
@@ -101,106 +111,38 @@ fi
 
 # Copy schema if not exists
 if [ ! -f "$TARGET_DIR/docs/constraints-schema.json" ]; then
-    cp "$SOURCE_DIR/constraints-schema.json" "$TARGET_DIR/docs/" 2>/dev/null || true
+    cp "$SOURCE_DIR/.adr-ai-skills/constraints-schema.json" "$TARGET_DIR/docs/" 2>/dev/null || true
     echo -e "  ${GREEN}✓${NC} Created constraints-schema.json"
 else
     echo -e "  ${YELLOW}⊘${NC} constraints-schema.json already exists (preserved)"
 fi
 
-echo -e "${BLUE}[4/6]${NC} Configuring Claude Code..."
+echo -e "${BLUE}[5/7]${NC} Configuring Claude Code..."
 
-# Merge into .claude/settings.json
+# Skills are auto-discovered from .claude/skills/*/SKILL.md
+# No need to modify settings.json for skills
+
 mkdir -p "$TARGET_DIR/.claude"
 
-if [ -f "$TARGET_DIR/.claude/settings.json" ]; then
-    # Backup existing
-    cp "$TARGET_DIR/.claude/settings.json" "$TARGET_DIR/.claude/settings.json.backup.$(date +%Y%m%d%H%M%S)"
-    echo -e "  ${YELLOW}⊘${NC} Backed up existing settings.json"
-
-    # Check if jq is available for merging
-    if command -v jq &> /dev/null; then
-        # Merge skills into existing settings
-        PLUGIN_SKILLS=$(cat << 'EOF'
-{
-  "adr-ai-skills:adr": {
-    "path": ".adr-ai-skills/skills/adr.md",
-    "description": "AI-powered ADR management with multi-format support"
-  },
-  "adr-ai-skills:jj-analyze": {
-    "path": ".adr-ai-skills/skills/jj-analyze.md",
-    "description": "AI detection of architectural decisions"
-  },
-  "adr-ai-skills:design-review": {
-    "path": ".adr-ai-skills/skills/design-review.md",
-    "description": "AI architectural compliance review"
-  },
-  "adr-ai-skills:constraints-check": {
-    "path": ".adr-ai-skills/skills/constraints-check.md",
-    "description": "Automated constraint validation for CI"
-  },
-  "adr-ai-skills:sync": {
-    "path": ".adr-ai-skills/skills/sync.md",
-    "description": "Sync JJ changes to Git"
-  },
-  "adr-ai-skills:pr": {
-    "path": ".adr-ai-skills/skills/pr.md",
-    "description": "Create PR with auto-linked ADRs"
-  },
-  "adr-ai-skills:release": {
-    "path": ".adr-ai-skills/skills/release.md",
-    "description": "Release with ADR-aware notes"
-  }
-}
-EOF
-)
-        jq --argjson skills "$PLUGIN_SKILLS" '.skills = (.skills // {}) + $skills' \
-            "$TARGET_DIR/.claude/settings.json" > "$TARGET_DIR/.claude/settings.json.tmp"
-        mv "$TARGET_DIR/.claude/settings.json.tmp" "$TARGET_DIR/.claude/settings.json"
-        echo -e "  ${GREEN}✓${NC} Merged skills into settings.json"
-    else
-        echo -e "  ${YELLOW}⚠${NC} jq not found - manual merge required"
-        echo -e "      Add adr-ai-skills to .claude/settings.json"
-    fi
-else
-    # Create new settings.json
+if [ ! -f "$TARGET_DIR/.claude/settings.json" ]; then
+    # Create minimal settings.json if not exists
     cat > "$TARGET_DIR/.claude/settings.json" << 'EOF'
 {
-  "skills": {
-    "adr-ai-skills:adr": {
-      "path": ".adr-ai-skills/skills/adr.md",
-      "description": "AI-powered ADR management with multi-format support"
-    },
-    "adr-ai-skills:jj-analyze": {
-      "path": ".adr-ai-skills/skills/jj-analyze.md",
-      "description": "AI detection of architectural decisions"
-    },
-    "adr-ai-skills:design-review": {
-      "path": ".adr-ai-skills/skills/design-review.md",
-      "description": "AI architectural compliance review"
-    },
-    "adr-ai-skills:constraints-check": {
-      "path": ".adr-ai-skills/skills/constraints-check.md",
-      "description": "Automated constraint validation for CI"
-    },
-    "adr-ai-skills:sync": {
-      "path": ".adr-ai-skills/skills/sync.md",
-      "description": "Sync JJ changes to Git"
-    },
-    "adr-ai-skills:pr": {
-      "path": ".adr-ai-skills/skills/pr.md",
-      "description": "Create PR with auto-linked ADRs"
-    },
-    "adr-ai-skills:release": {
-      "path": ".adr-ai-skills/skills/release.md",
-      "description": "Release with ADR-aware notes"
+  "prompts": {
+    "architect": {
+      "system": "You are a software architect. Ensure code changes respect existing ADRs."
     }
   }
 }
 EOF
     echo -e "  ${GREEN}✓${NC} Created settings.json"
+else
+    echo -e "  ${YELLOW}⊘${NC} settings.json exists (preserved)"
 fi
 
-echo -e "${BLUE}[5/6]${NC} Updating CLAUDE.md..."
+echo -e "  ${GREEN}✓${NC} Skills auto-discovered from .claude/skills/"
+
+echo -e "${BLUE}[6/7]${NC} Updating CLAUDE.md..."
 
 # Append to CLAUDE.md (not replace)
 CLAUDE_SECTION=$(cat << 'EOF'
@@ -268,7 +210,7 @@ fi
 # Initialize VCS if not already initialized
 if [ ! -d "$TARGET_DIR/.jj" ] && [ ! -d "$TARGET_DIR/.git" ]; then
     echo ""
-    echo -e "${BLUE}[6/6]${NC} Initializing version control..."
+    echo -e "${BLUE}[7/7]${NC} Initializing version control..."
     if command -v jj &> /dev/null; then
         # JJ available - use colocated mode (JJ + Git)
         jj git init --colocate "$TARGET_DIR"
@@ -282,7 +224,7 @@ if [ ! -d "$TARGET_DIR/.jj" ] && [ ! -d "$TARGET_DIR/.git" ]; then
     fi
 elif [ -d "$TARGET_DIR/.git" ] && [ ! -d "$TARGET_DIR/.jj" ]; then
     echo ""
-    echo -e "${BLUE}[6/6]${NC} Version control setup..."
+    echo -e "${BLUE}[7/7]${NC} Version control setup..."
     if command -v jj &> /dev/null; then
         echo -e "  ${YELLOW}⊘${NC} Git repo exists. To add JJ: jj git init --git-repo ."
     else
@@ -290,7 +232,7 @@ elif [ -d "$TARGET_DIR/.git" ] && [ ! -d "$TARGET_DIR/.jj" ]; then
     fi
 else
     echo ""
-    echo -e "${BLUE}[6/6]${NC} Version control..."
+    echo -e "${BLUE}[7/7]${NC} Version control..."
     echo -e "  ${GREEN}✓${NC} Already initialized"
 fi
 
