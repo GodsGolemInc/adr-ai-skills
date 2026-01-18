@@ -59,20 +59,28 @@ mkdir -p "$TARGET_DIR/docs/design-notes"
 
 echo -e "  ${GREEN}✓${NC} Directories created"
 
-echo -e "${BLUE}[2/7]${NC} Installing skills (Claude Code official format)..."
+echo -e "${BLUE}[2/7]${NC} Installing skills and commands..."
 
 # Source directory for plugin files
 SOURCE_DIR="$SCRIPT_DIR"
 
-# Copy skills to .claude/skills/ (official Claude Code format)
+# Copy skills to .claude/skills/ (auto-discovered by Claude Code)
 for skill in adr jj-analyze design-review constraints-check sync pr release; do
     mkdir -p "$TARGET_DIR/.claude/skills/$skill"
     if [ -f "$SOURCE_DIR/.claude/skills/$skill/SKILL.md" ]; then
         cp "$SOURCE_DIR/.claude/skills/$skill/SKILL.md" "$TARGET_DIR/.claude/skills/$skill/"
     fi
 done
+echo -e "  ${GREEN}✓${NC} Skills installed (.claude/skills/)"
 
-echo -e "  ${GREEN}✓${NC} Skills installed"
+# Copy slash commands to .claude/commands/ (explicit /command invocation)
+mkdir -p "$TARGET_DIR/.claude/commands"
+for cmd in adr jj-analyze design-review constraints-check sync pr release; do
+    if [ -f "$SOURCE_DIR/.claude/commands/$cmd.md" ]; then
+        cp "$SOURCE_DIR/.claude/commands/$cmd.md" "$TARGET_DIR/.claude/commands/"
+    fi
+done
+echo -e "  ${GREEN}✓${NC} Commands installed (.claude/commands/)"
 
 echo -e "${BLUE}[3/7]${NC} Installing plugin files..."
 
